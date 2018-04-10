@@ -1,0 +1,22 @@
+{
+  "name": "elastic-search-nodejs",
+  "version": "1.0.0",
+  "description": "elastic-search-nodejs-async-await",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "keywords": [
+    "nodejs",
+    "elastic-search",
+    "async-await"
+  ],
+  "author": "Devesh Vyas <dev2605vyas@icloud.com>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "elasticsearch": "^14.2.2",
+    "express": "^4.16.3"
+  }
+}
