@@ -8,5 +8,9 @@ module.exports = function(app) {
 
     app.post('/addDocument',blog.addDocument);
 
-    app.get('/searchDocumentByPostName',blog.searchDocument);
+    app.get('/searchDocumentByPostName',blog.searchDocumentByPostName);
+
+    app.delete('/deletAllIndex',blog.deleteAllIndex);
+
+    app.delete('/deleteADocument',blog.deleteADocument);
 }

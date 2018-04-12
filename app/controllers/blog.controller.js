@@ -33,7 +33,31 @@ exports.createIndex = async(req, res) => {
             let data = await elasticClient.indices.create({index: indexName});
             if(data){
                 appData['error'] = 0;
-                appData['message'] = 'Index Created ';
+                appData['message'] = 'Index Created';
+                res.status(200).json(appData);
+            }
+        }
+    } catch (err) {
+        appData['error'] = 1;
+        appData['message'] = err.message;
+        res.status(500).json(appData);
+    }
+};
+
+/**
+ * Delete all index
+ */
+exports.deleteAnIndex = async(req, res) => {
+    
+    let appData = {};
+    
+    try {
+        let result = await elasticClient.ping({requestTimeout:30000});
+        if(result){
+            let data = await elasticClient.indices.delete({index: '_all'});
+            if(data){
+                appData['error'] = 0;
+                appData['message'] = 'All Index deleted';
                 res.status(200).json(appData);
             }
         }
@@ -62,9 +86,9 @@ exports.addDocument = async(req, res) => {
                 index: indexName,
                 type: 'posts',
                 body: {
-                    "PostName": postName,
-                    "PostType": postType,
-                    "PostBody": postBody
+                    "postName": postName,
+                    "postType": postType,
+                    "postBody": postBody
                 }
             });
             if(data){
@@ -81,7 +105,37 @@ exports.addDocument = async(req, res) => {
 };
 
 /**
- * Search for a document in an index
+ * Delete a document
+ */
+exports.deleteADocument = async(req, res) => {
+    
+    let appData = {};
+    let indexName = req.body.indexName;
+    let id = req.body.id;
+    
+    try {
+        let result = await elasticClient.ping({requestTimeout:30000});
+        if(result){
+            let data = await elasticClient.delete({
+                index: indexName,
+                type: 'posts',
+                id: id,
+              });
+            if(data){
+                appData['error'] = 0;
+                appData['message'] = 'Document deleted';
+                res.status(200).json(appData);
+            }
+        }
+    } catch (err) {
+        appData['error'] = 1;
+        appData['message'] = err.message;
+        res.status(500).json(appData);
+    }
+};
+
+/**
+ * Search for a document in an index by postName
  */
 exports.searchDocumentByPostName = async(req, res) => {
     
@@ -98,15 +152,41 @@ exports.searchDocumentByPostName = async(req, res) => {
                 type: type,
                 body:{
                     query:{
-                        match:{
-                            'PostName':searchQuery
-                        }
+                        multi_match: {
+                           'fields':  ['postName'],
+                            'query':   searchQuery,
+                            'fuzziness': 'AUTO'
+                          }
                     }
                 }
             });
             if(data){
                 appData['error'] = 0;
                 appData['message'] = data;
+                res.status(200).json(appData);
+            }
+        }
+    } catch (err) {
+        appData['error'] = 1;
+        appData['message'] = err.message;
+        res.status(500).json(appData);
+    }
+};
+
+/**
+ * Delete all index
+ */
+exports.deleteAllIndex = async(req, res) => {
+    
+    let appData = {};
+    
+    try {
+        let result = await elasticClient.ping({requestTimeout:30000});
+        if(result){
+            let data = await elasticClient.indices.delete({index: '_all'})
+            if(data){
+                appData['error'] = 0;
+                appData['message'] = 'All Index deleted';
                 res.status(200).json(appData);
             }
         }
